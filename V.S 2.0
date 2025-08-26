@@ -1,0 +1,78 @@
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+
+const App = () => {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Logo em círculo */}
+      <View style={styles.logoCircle}>
+        <Text style={styles.logoText1}>DROGARIA</Text>
+        <Text style={styles.logoText2}>CESAR</Text>
+      </View>
+
+      {/* Botão de Login */}
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>login</Text>
+      </TouchableOpacity>
+
+      {/* Texto de cadastro */}
+      <Text style={styles.signupText}>não tem uma conta?</Text>
+
+      {/* Botão de Criar */}
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>criar</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FF69B4', // Rosa escuro
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  logoCircle: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: '#FFB6C1', // Rosa claro
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 40,
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
+  },
+  logoText1: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#800080', // Roxo escuro
+  },
+  logoText2: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#800080', // Roxo escuro
+  },
+  button: {
+    backgroundColor: '#FF1493', // Rosa mais forte
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+    borderRadius: 30,
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  signupText: {
+    color: 'white',
+    fontSize: 16,
+    marginBottom: 15,
+  },
+});
+
+export default App;
