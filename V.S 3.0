@@ -1,0 +1,348 @@
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  TextInput,
+  ScrollView,
+  Image,
+} from "react-native";
+
+const App = () => {
+  const [currentScreen, setCurrentScreen] = useState("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+
+  const produtos = [
+    {
+      id: 1,
+      nome: "Paracetamol",
+      preco: "R$ 12,90",
+      imagem: "https://via.placeholder.com/150/FFB6C1/800080?text=P",
+    },
+    {
+      id: 2,
+      nome: "Dipirona",
+      preco: "R$ 8,50",
+      imagem: "https://via.placeholder.com/150/FFB6C1/800080?text=D",
+    },
+    {
+      id: 3,
+      nome: "Ibuprofeno",
+      preco: "R$ 15,75",
+      imagem: "https://via.placeholder.com/150/FFB6C1/800080?text=I",
+    },
+  ];
+
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case "login":
+        return (
+          <View style={styles.screenContainer}>
+            <View style={styles.logoCircle}>
+              <Text style={styles.logoText1}>DROGARIA</Text>
+              <Text style={styles.logoText2}>CESAR</Text>
+            </View>
+
+            <TextInput
+              style={[styles.input, styles.fontInput]}
+              placeholder="Email"
+              placeholderTextColor="#999"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+
+            <TextInput
+              style={[styles.input, styles.fontInput]}
+              placeholder="Senha"
+              placeholderTextColor="#999"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setCurrentScreen("produtos")}
+            >
+              <Text style={styles.buttonText}>Entrar</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.linkText}>
+              Não tem uma conta?{" "}
+              <Text
+                style={styles.link}
+                onPress={() => setCurrentScreen("register")}
+              >
+                Criar conta
+              </Text>
+            </Text>
+          </View>
+        );
+
+      case "register":
+        return (
+          <View style={styles.screenContainer}>
+            <View style={styles.logoCircle}>
+              <Text style={styles.logoText1}>DROGARIA</Text>
+              <Text style={styles.logoText2}>CESAR</Text>
+            </View>
+
+            <TextInput
+              style={[styles.input, styles.fontInput]}
+              placeholder="Nome completo"
+              placeholderTextColor="#999"
+              value={name}
+              onChangeText={setName}
+            />
+
+            <TextInput
+              style={[styles.input, styles.fontInput]}
+              placeholder="Email"
+              placeholderTextColor="#999"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+
+            <TextInput
+              style={[styles.input, styles.fontInput]}
+              placeholder="Senha"
+              placeholderTextColor="#999"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setCurrentScreen("produtos")}
+            >
+              <Text style={styles.buttonText}>Cadastrar</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.linkText}>
+              Já tem uma conta?{" "}
+              <Text
+                style={styles.link}
+                onPress={() => setCurrentScreen("login")}
+              >
+                Fazer login
+              </Text>
+            </Text>
+          </View>
+        );
+
+      case "produtos":
+        return (
+          <View style={styles.screenContainer}>
+            <Text style={styles.title}>Nossos Produtos</Text>
+
+            <ScrollView style={styles.scrollContainer}>
+              {produtos.map((produto) => (
+                <TouchableOpacity
+                  key={produto.id}
+                  style={styles.produtoCard}
+                  onPress={() => setCurrentScreen("carrinho")}
+                >
+                  <Image
+                    source={{ uri: produto.imagem }}
+                    style={styles.produtoImage}
+                  />
+                  <View style={styles.produtoInfo}>
+                    <Text style={styles.produtoNome}>{produto.nome}</Text>
+                    <Text style={styles.produtoPreco}>{produto.preco}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              style={styles.smallButton}
+              onPress={() => setCurrentScreen("login")}
+            >
+              <Text style={styles.buttonText}>Sair</Text>
+            </TouchableOpacity>
+          </View>
+        );
+
+      case "carrinho":
+        return (
+          <View style={styles.screenContainer}>
+            <Text style={styles.title}>Seu Carrinho</Text>
+
+            <View style={styles.carrinhoItem}>
+              <Text style={styles.produtoNome}>Paracetamol</Text>
+              <Text style={styles.produtoPreco}>R$ 12,90</Text>
+            </View>
+
+            <View style={styles.totalContainer}>
+              <Text style={styles.totalText}>Total: R$ 12,90</Text>
+            </View>
+
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Finalizar Compra</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.smallButton}
+              onPress={() => setCurrentScreen("produtos")}
+            >
+              <Text style={styles.buttonText}>Voltar</Text>
+            </TouchableOpacity>
+          </View>
+        );
+    }
+  };
+
+  return <SafeAreaView style={styles.container}>{renderScreen()}</SafeAreaView>;
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FF69B4",
+  },
+  screenContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  scrollContainer: {
+    width: "100%",
+    marginBottom: 15,
+  },
+  logoCircle: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: "#FFB6C1",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 30,
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+  },
+  logoText1: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#800080",
+    fontFamily: "serif", // Fonte serifada para o logo
+  },
+  logoText2: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#800080",
+    fontFamily: "serif", // Fonte serifada para o logo
+  },
+  input: {
+    width: "100%",
+    backgroundColor: "white",
+    borderRadius: 25,
+    padding: 15,
+    marginBottom: 15,
+    fontSize: 16,
+  },
+  fontInput: {
+    fontFamily: "monospace", // Fonte monoespaçada para inputs
+  },
+  button: {
+    backgroundColor: "#FF1493",
+    paddingVertical: 15,
+    borderRadius: 30,
+    marginBottom: 15,
+    width: "100%",
+  },
+  smallButton: {
+    backgroundColor: "#800080",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    fontFamily: "sans-serif", // Fonte sans-serif para botões
+  },
+  linkText: {
+    color: "white",
+    fontSize: 16,
+    marginTop: 10,
+    fontFamily: "sans-serif-light", // Fonte light para texto de link
+  },
+  link: {
+    fontWeight: "bold",
+    textDecorationLine: "underline",
+    fontFamily: "sans-serif-medium", // Fonte medium para links clicáveis
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 20,
+    fontFamily: "sans-serif-condensed", // Fonte condensada para títulos
+  },
+  produtoCard: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 15,
+    width: "100%",
+    alignItems: "center",
+  },
+  produtoImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 15,
+    backgroundColor: "#FFB6C1",
+  },
+  produtoInfo: {
+    flex: 1,
+  },
+  produtoNome: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#800080",
+    fontFamily: "sans-serif", // Fonte sans-serif para nomes de produtos
+  },
+  produtoPreco: {
+    fontSize: 16,
+    color: "#FF1493",
+    fontFamily: "sans-serif", // Fonte sans-serif para preços
+  },
+  carrinhoItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 10,
+    width: "100%",
+  },
+  totalContainer: {
+    borderTopWidth: 1,
+    borderTopColor: "white",
+    paddingTop: 15,
+    marginTop: 15,
+    width: "100%",
+  },
+  totalText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+    fontFamily: "sans-serif-condensed", // Fonte condensada para total
+  },
+});
+
+export default App;
