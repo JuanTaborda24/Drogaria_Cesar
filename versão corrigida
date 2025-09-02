@@ -1,0 +1,475 @@
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Alert, Modal } from 'react-native';
+
+// Componente principal
+const DrogariaCesar = () => {
+  const [currentScreen, setCurrentScreen] = useState('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [carrinho, setCarrinho] = useState([]);
+  const [showEasterEgg, setShowEasterEgg] = useState(false);
+
+  // Produtos disponíveis
+  const produtos = [
+    { id: 1, nome: 'Paracetamol', preco: 'R$ 12,90' },
+    { id: 2, nome: 'Dipirona', preco: 'R$ 8,50' },
+    { id: 3, nome: 'Ibuprofeno', preco: 'R$ 15,75' },
+    { id: 4, nome: 'Omeprazol', preco: 'R$ 22,30' },
+    { id: 5, nome: 'Amoxilina', preco: 'R$ 18,90' },
+    { id: 6, nome: 'Bandagem', preco: 'R$ 5,90' },
+    { id: 7, nome: 'Álcool em Gel', preco: 'R$ 9,90' },
+    { id: 8, nome: 'Termômetro', preco: 'R$ 25,00' },
+  ];
+
+  // Funções do carrinho
+  const adicionarAoCarrinho = (produto) => {
+    setCarrinho([...carrinho, produto]);
+    Alert.alert('✅ Adicionado', `${produto.nome} foi adicionado ao carrinho!`);
+  };
+
+  const calcularTotal = () => {
+    return carrinho.reduce((total, item) => {
+      const preco = parseFloat(item.preco.replace('R$ ', '').replace(',', '.'));
+      return total + preco;
+    }, 0).toFixed(2);
+  };
+
+  const limparCarrinho = () => {
+    setCarrinho([]);
+    Alert.alert('🛒 Carrinho limpo!', 'Todos os itens foram removidos.');
+  };
+
+  const finalizarCompra = () => {
+    Alert.alert('🎉 Compra finalizada!', `Obrigado por comprar na Drogaria Cesar!\nTotal: R$ ${calcularTotal()}`);
+    setCarrinho([]);
+    setCurrentScreen('produtos');
+  };
+
+  // Funções de autenticação
+  const handleLogin = () => {
+    if (email && password) {
+      setCurrentScreen('produtos');
+    } else {
+      Alert.alert('⚠️ Atenção', 'Preencha email e senha para continuar!');
+    }
+  };
+
+  const handleRegister = () => {
+    if (name && email && password) {
+      Alert.alert('✅ Sucesso', 'Cadastro realizado com sucesso!');
+      setCurrentScreen('produtos');
+    } else {
+      Alert.alert('⚠️ Atenção', 'Preencha todos os campos para cadastrar!');
+    }
+  };
+
+  // Easter Egg secreto!
+  const revelarEasterEgg = () => {
+    setShowEasterEgg(true);
+    setTimeout(() => setShowEasterEgg(false), 2000);
+  };
+
+  // Renderizar tela atual
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'login':
+        return <LoginScreen />;
+      case 'register':
+        return <RegisterScreen />;
+      case 'produtos':
+        return <ProdutosScreen />;
+      case 'carrinho':
+        return <CarrinhoScreen />;
+      default:
+        return null;
+    }
+  };
+
+  // Componentes de cada tela
+  const LoginScreen = () => (
+    <View style={styles.screenContainer}>
+      <TouchableOpacity onPress={revelarEasterEgg}>
+        <View style={styles.logoCircle}>
+          <Text style={styles.logoText1}>DROGARIA</Text>
+          <Text style={styles.logoText2}>CESAR</Text>
+        </View>
+      </TouchableOpacity>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#999"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Senha"
+        placeholderTextColor="#999"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>ENTRAR</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.linkText}>
+        Não tem uma conta?{' '}
+        <Text style={styles.link} onPress={() => setCurrentScreen('register')}>
+          Criar conta
+        </Text>
+      </Text>
+    </View>
+  );
+
+  const RegisterScreen = () => (
+    <View style={styles.screenContainer}>
+      <TouchableOpacity onPress={revelarEasterEgg}>
+        <View style={styles.logoCircle}>
+          <Text style={styles.logoText1}>DROGARIA</Text>
+          <Text style={styles.logoText2}>CESAR</Text>
+        </View>
+      </TouchableOpacity>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Nome completo"
+        placeholderTextColor="#999"
+        value={name}
+        onChangeText={setName}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#999"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Senha"
+        placeholderTextColor="#999"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>CADASTRAR</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.linkText}>
+        Já tem uma conta?{' '}
+        <Text style={styles.link} onPress={() => setCurrentScreen('login')}>
+          Fazer login
+        </Text>
+      </Text>
+    </View>
+  );
+
+  const ProdutosScreen = () => (
+    <View style={styles.screenContainer}>
+      <View style={styles.header}>
+        <Text style={styles.title}>PRODUTOS</Text>
+        <TouchableOpacity style={styles.carrinhoButton} onPress={() => setCurrentScreen('carrinho')}>
+          <Text style={styles.carrinhoText}>CARRINHO ({carrinho.length})</Text>
+        </TouchableOpacity>
+      </View>
+      
+      <ScrollView style={styles.scrollContainer}>
+        {produtos.map(produto => (
+          <TouchableOpacity 
+            key={produto.id} 
+            style={styles.produtoCard}
+            onPress={() => adicionarAoCarrinho(produto)}>
+            <View style={styles.produtoInfo}>
+              <Text style={styles.produtoNome}>{produto.nome}</Text>
+              <Text style={styles.produtoPreco}>{produto.preco}</Text>
+            </View>
+            <Text style={styles.addButton}>+</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      <TouchableOpacity style={styles.smallButton} onPress={() => setCurrentScreen('login')}>
+        <Text style={styles.buttonText}>SAIR</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const CarrinhoScreen = () => (
+    <View style={styles.screenContainer}>
+      <Text style={styles.title}>CARRINHO</Text>
+      
+      {carrinho.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>🛒 Carrinho vazio</Text>
+        </View>
+      ) : (
+        <>
+          <ScrollView style={styles.scrollContainer}>
+            {carrinho.map((item, index) => (
+              <View key={index} style={styles.carrinhoItem}>
+                <View style={styles.carrinhoInfo}>
+                  <Text style={styles.produtoNome}>{item.nome}</Text>
+                  <Text style={styles.produtoPreco}>{item.preco}</Text>
+                </View>
+                <TouchableOpacity 
+                  style={styles.deleteButton}
+                  onPress={() => {
+                    const novoCarrinho = [...carrinho];
+                    novoCarrinho.splice(index, 1);
+                    setCarrinho(novoCarrinho);
+                  }}>
+                  <Text style={styles.deleteText}>X</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </ScrollView>
+
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalText}>TOTAL: R$ {calcularTotal()}</Text>
+          </View>
+
+          <TouchableOpacity style={styles.button} onPress={finalizarCompra}>
+            <Text style={styles.buttonText}>FINALIZAR COMPRA</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.smallButton} onPress={limparCarrinho}>
+            <Text style={styles.buttonText}>LIMPAR CARRINHO</Text>
+          </TouchableOpacity>
+        </>
+      )}
+
+      <TouchableOpacity style={styles.smallButton} onPress={() => setCurrentScreen('produtos')}>
+        <Text style={styles.buttonText}>VOLTAR</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      {renderScreen()}
+      
+      {/* Easter Egg Modal */}
+      <Modal visible={showEasterEgg} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.easterEggCard}>
+            <Text style={styles.easterEggText}>
+              DROGARIA CESAR{"\n"}
+              O IMPÉRIO DOS REMÉDIOS
+            </Text>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
+};
+
+// Estilos
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FF69B4',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  screenContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    width: '100%',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 20,
+  },
+  carrinhoButton: {
+    backgroundColor: '#FF1493',
+    padding: 10,
+    borderRadius: 5,
+  },
+  carrinhoText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  scrollContainer: {
+    width: '100%',
+    marginBottom: 15,
+    maxHeight: 300,
+  },
+  logoCircle: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: '#FFB6C1',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 30,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+  logoText1: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#800080',
+  },
+  logoText2: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#800080',
+  },
+  input: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 12,
+    marginBottom: 15,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: '#FF1493',
+    padding: 15,
+    borderRadius: 5,
+    marginBottom: 15,
+    width: '100%',
+    alignItems: 'center',
+  },
+  smallButton: {
+    backgroundColor: '#800080',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  linkText: {
+    color: 'white',
+    fontSize: 14,
+    marginTop: 10,
+  },
+  link: {
+    fontWeight: 'bold',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  emptyText: {
+    color: 'white',
+    fontSize: 18,
+  },
+  produtoCard: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 15,
+    marginBottom: 10,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  produtoInfo: {
+    flex: 1,
+  },
+  produtoNome: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#800080',
+  },
+  produtoPreco: {
+    fontSize: 14,
+    color: '#FF1493',
+    fontWeight: 'bold',
+  },
+  addButton: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FF1493',
+  },
+  carrinhoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 12,
+    marginBottom: 8,
+    width: '100%',
+    justifyContent: 'space-between',
+  },
+  carrinhoInfo: {
+    flex: 1,
+  },
+  deleteButton: {
+    backgroundColor: '#FF1493',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  totalContainer: {
+    borderTopWidth: 1,
+    borderTopColor: 'white',
+    paddingTop: 10,
+    marginTop: 10,
+    width: '100%',
+  },
+  totalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  easterEggCard: {
+    backgroundColor: '#FF1493',
+    padding: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    borderWidth: 4,
+    borderColor: '#800080',
+  },
+  easterEggText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    lineHeight: 32,
+  },
+});
+
+// Export para CodeSandbox
+export default DrogariaCesar;
